@@ -32,7 +32,10 @@ include("../../../../ConnectToDB/ConnectToDB.php");
 		// checking the email Input to see that its not blank
 		if($_POST['strEmail'] !== ''){
 			// the input will be what the user types
-			$email = $_POST['strEmail'];
+            $email = $_POST['strEmail'];
+            $password = $_POST["strPassword"];
+            $email = mysqli_real_escape_string($connection, $email);
+            $password = mysqli_real_escape_string($connection, $password);
 			// Checking to see if the email entered matches with the email on the database
             $sqlSelect =  "SELECT * FROM users WHERE strEmail ='.$email.'";
 			// adding the validation for email with '@' + '.'
@@ -46,9 +49,10 @@ include("../../../../ConnectToDB/ConnectToDB.php");
 		if($validEmail) 
 		{
 			// fetching data for the specific user from database
-			$userLogin = BackEndFunctions::outputData($sqlSelect);
+            $userLogin = BackEndFunctions::outputData($sqlSelect);
+            
 			// hashing the password with extra characters for security
-			$secretPassword = password_hash($_POST["strPassword"], PASSWORD_DEFAULT);
+			$secretPassword = password_hash($password, PASSWORD_DEFAULT);
 			if ($userLogin) {
 				// pairing the hashed password with regular password
 				$encryptedPass = $userLogin[0]['strPassword'];
